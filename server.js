@@ -18,7 +18,7 @@ app.use(bodyParser({
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
-	extended:true,
+	extended: false,
 }));
 
 // prevent CORS issue
@@ -27,6 +27,8 @@ app.use((_,res,next) => {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
+
+app.set('view engine', 'ejs');
 
 // respond to ping
 app.get('/', (req, res) => {
@@ -61,9 +63,15 @@ app.post('/index', (req, res) => {
 });
 
 app.post('/search', (req, res) => {
+	// console.warn('req is ', req)
 	let key = req.body.key;
-	indexerInstance.getTOP10MatchingDocuments(key);
-	res.redirect('/');
+	console.warn('key is ss ', req.params.key)
+	// console.warn('key is ss ', req.body.key)
+	// console.warn('key is ss ', req.query)
+	let result = indexerInstance.getTOP10MatchingDocuments(key);
+	console.warn('result is ')
+	console.warn(result)
+	res.render(__dirname + '/view/ejs-files/searcher.ejs', { result: result });
 });
 
 const server = app.listen(port, url, e => {

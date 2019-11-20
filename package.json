@@ -24,6 +24,7 @@
   "homepage": "https://github.com/Harkishen-Singh/tapsearch-indexer#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "ejs": "^2.7.4",
     "express": "^4.17.1"
   }
 }

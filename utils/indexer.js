@@ -14,7 +14,7 @@ class Indexer {
      * @returns {[string]} array of strings representing each paragraph or document
      */
     getParagraphs(content) {
-        let p = content.split('\n\n'),
+        let p = content.split('\r\n\r\n'),
             filtered = [];
         for (let para of p) {
             if (para.length) {
@@ -25,7 +25,6 @@ class Indexer {
     }
 
     isStopword(word) {
-        console.warn('word is ', word)
         return this.stopwords.includes(word);
     }
 
@@ -117,6 +116,7 @@ class Indexer {
 
     getTOP10MatchingDocuments(word) {
         let docs = this.getRelatedDocuments(word);
+        console.log('length : ', docs.length)
         if (docs.length > 10) {
             let diff = docs.length - 10;
             for (let i = 0; i < diff; i++) {
