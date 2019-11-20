@@ -1,0 +1,27 @@
+{
+  "name": "tapsearch-indexer",
+  "version": "0.0.1-a",
+  "description": "Creates an inverted index for the given documents",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harkishen-Singh/tapsearch-indexer.git"
+  },
+  "keywords": [
+    "indexer",
+    "documents"
+  ],
+  "author": "harkishen singh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harkishen-Singh/tapsearch-indexer/issues"
+  },
+  "homepage": "https://github.com/Harkishen-Singh/tapsearch-indexer#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
+}
