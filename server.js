@@ -8,7 +8,9 @@ const exp = require('express'),
 var requestedUsersSinceUP = 0;
 
 // allow long document contents
-app.use(bodyParser({limit: '50mb'}));
+app.use(bodyParser({
+	limit: '50mb'
+}));
 
 app.use(bodyParser.json());
 
