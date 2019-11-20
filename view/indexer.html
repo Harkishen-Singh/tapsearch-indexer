@@ -16,13 +16,16 @@
         </div>
     </div>
     <div class="container">
-        <div class="row">
-            <div class="center-align col-md-6 col-lg-6 col-sm-6">
-                <a href="/indexer"><span class="align-base">Indexer</span></a>
-            </div>
-            <div class="center-align col-md-6 col-lg-6 col-sm-6">
-                <a href="/searcher"><span class="align-base">Searcher</span></a>
-            </div>
+        <div class="row" style="margin-bottom: 10%;">
+            <br>
+            Enter the text below
+            <br>
+            <br>
+            <form action="http://127.0.0.1:5000/index" method="post">
+                <textarea name="content" id="" cols="40" rows="40"></textarea>
+                <br>
+                <button class="btn btn-primary">Submit</button>
+            </form>
         </div>
     </div>
     <footer>

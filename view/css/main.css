@@ -1,7 +1,7 @@
 .header {
   overflow: hidden;
   background-color: #f1f1f1;
-  padding: 20px 10px;
+  padding: 10px 10px;
 }
 
 .header a {
@@ -205,4 +205,25 @@ textarea {
 
 .previous-layer {
   padding: 3%;
+}
+
+.center-align {
+  text-align: center;
+  height: 40vh;
+  margin-top: 5%;
+  border-radius: 10px;
+  padding-left: 10px;
+}
+
+.align-base {
+  position: absolute;
+  color: black;
+  left: 10%;
+  padding: 30%;
+  background-color: #f1f1f1;
+}
+
+form {
+  height: 100%;
+  width: 100%;
 }

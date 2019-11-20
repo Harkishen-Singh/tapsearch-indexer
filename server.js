@@ -1,10 +1,14 @@
-const app = require('express')(),
+const exp = require('express'),
+	app = exp(),
 	bodyParser = require('body-parser'),
 	networkInterface = require('os')['networkInterfaces'],
 	port = process.env.PORT || 5000,
 	url = '0.0.0.0';
 
 var requestedUsersSinceUP = 0;
+
+// allow long document contents
+app.use(bodyParser({limit: '50mb'}));
 
 app.use(bodyParser.json());
 
@@ -33,6 +37,24 @@ app.get('/css/bootstrap.css', (_, res) => {
 	res.sendFile(__dirname + '/view/css/bootstrap.css')
 });
 
+app.get('/contact', (_, res) => {
+	res.sendFile(__dirname + '/view/contact.html')
+});
+
+app.get('/indexer', (_, res) => {
+	res.sendFile(__dirname + '/view/indexer.html')
+});
+
+app.get('/searcher', (_, res) => {
+	res.sendFile(__dirname + '/view/searcher.html')
+});
+
+app.post('/index', (req, res) => {
+	let text = req.body.content;
+	console.warn('text: ', text)
+	res.redirect('/');
+});
+
 const server = app.listen(port, url, e => {
 	if (e) {
 		throw e;
@@ -44,5 +66,5 @@ const server = app.listen(port, url, e => {
 		console.log('from: ', inst['address'], ' family: ', inst['family']);
 	}
 
-	console.log('Up at ', server.address().address, ' at port ', server.address().port);
+	console.log('up at ', server.address().address, ' at port ', server.address().port);
 });
