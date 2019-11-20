@@ -1,8 +1,7 @@
-const stopwords = require('./stop-words');
+// const stopwords = require('./stop-words').stopwords;
 
-export class Indexer {
-
-    constructor(content) {
+class Indexer {
+    constructor(content, stopwords) {
         this.indexInvMap = {};
         this.content = content;
         this.stopwords = stopwords;
@@ -15,17 +14,18 @@ export class Indexer {
      * @returns {[string]} array of strings representing each paragraph or document
      */
     getParagraphs(content) {
-        let p = content.split('\n'),
+        let p = content.split('\n\n'),
             filtered = [];
         for (let para of p) {
             if (para.length) {
                 filtered.push(para);
             }
         }
-        return para;
+        return filtered;
     }
 
     isStopword(word) {
+        console.warn('word is ', word)
         return this.stopwords.includes(word);
     }
 
@@ -39,24 +39,39 @@ export class Indexer {
             return hash;
         }
 
-        for (i = 0; i < s.length; i++) {
-            char = s.charCodeAt(i);
+        for (let i = 0; i < s.length; i++) {
+            let char = s.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash;
         }
-        return hash;
+        return Math.abs(hash);
     }
 
-    getDocumentHashMap(documents) {
-        let map;
+    filterWords(w) {
+        return w.replace('.', '')
+            .replace(',', '')
+            .replace("'", '')
+            .replace('"', '');
+    }
+
+    createDocumentHashMap(documents) {
         for (const doc of documents) {
-            map[this.gethashCode(doc)] = doc;
+            this.documentHashMap[this.gethashCode(doc)] = doc;
         }
-        return map;
+        return this.documentHashMap;
+    }
+
+    getHashFromDocument(map, doc) {
+        return Object.keys(map).find(key => map[key] === doc);
     }
 
     getDocumentFromHash(hash) {
-        
+        return this.documentHashMap[hash];
+    }
+
+    clear() {
+        this.indexInvMap = {};
+        this.documentHashMap = {};
     }
 
     /**
@@ -65,18 +80,59 @@ export class Indexer {
      */
     createInvIndexMap(documents) {
         for (const doc of documents) {
+            // let hash = this.getHashFromDocument(this.documentHashMap, doc); // since hash has already been computed
+            console.warn('replace the below line')
             let hash = this.gethashCode(doc);
-            for (const word of doc.split(' ')) {
+            console.warn('hash is ', hash)
+            for (let word of doc.split(' ')) {
+                word = this.filterWords(word.toLowerCase());
                 if(!this.isStopword(word)) {
                     if (this.isMapped(word)) {
-                        this.indexInvMap[word].append(hash);
+                        if (!this.indexInvMap[word].includes(hash))
+                            this.indexInvMap[word].push(hash);
                     } else {
                         this.indexInvMap[word] = [hash];
                     }
                 }
             }
         }
+        return this.indexInvMap;
     }
 
+    getRelatedDocuments(word) {
+        word = this.filterWords(word.toLowerCase());
+        if (this.isStopword(word)) {
+            return 'stop words not allowed';
+        } else if (this.isMapped(word)) {
+            let hashes = this.indexInvMap[word],
+                docs  = [];
+            for (const hash of hashes) {
+                console.warn('hash is ', hash)
+                docs.push(this.getDocumentFromHash(hash));
+            }
+            return docs;
+        }
+        return []; // if word not found in the existing indexes
+    }
 
+    getTOP10MatchingDocuments(word) {
+        let docs = this.getRelatedDocuments(word);
+        if (docs.length > 10) {
+            let diff = docs.length - 10;
+            for (let i = 0; i < diff; i++) {
+                docs.pop();
+            }
+        }
+        return docs;
+    }
+
+    insertContents(content) {
+        let docs = this.getParagraphs(content);
+        this.createDocumentHashMap(docs);
+        this.createInvIndexMap(docs);
+    }
 }
+
+module.exports = {
+    Indexer
+};

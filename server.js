@@ -3,6 +3,9 @@ const exp = require('express'),
 	bodyParser = require('body-parser'),
 	networkInterface = require('os')['networkInterfaces'],
 	port = process.env.PORT || 5000,
+	stopwords = require('./utils/stop-words').stopwords,
+	Indexer = require('./utils/indexer').Indexer,
+	indexerInstance = new Indexer('', stopwords),
 	url = '0.0.0.0';
 
 var requestedUsersSinceUP = 0;
@@ -53,7 +56,13 @@ app.get('/searcher', (_, res) => {
 
 app.post('/index', (req, res) => {
 	let text = req.body.content;
-	console.warn('text: ', text)
+	indexerInstance.insertContents(text);
+	res.redirect('/');
+});
+
+app.post('/search', (req, res) => {
+	let key = req.body.key;
+	indexerInstance.getTOP10MatchingDocuments(key);
 	res.redirect('/');
 });
 
