@@ -2,9 +2,11 @@
   "name": "tapsearch-indexer",
   "version": "0.0.1-a",
   "description": "Creates an inverted index for the given documents",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "view": "http-server view/",
+    "serve": "node server.js"
   },
   "repository": {
     "type": "git",
