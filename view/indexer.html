@@ -22,13 +22,15 @@
             <br>
             <form action="/indexPDF" method="post" enctype="multipart/form-data">
                 <input type="file" name="myFile" id=""> <br> <br>
-                <button type="submit" value = "Upload a file" class="btn btn-primary"></button>
+                <button type="submit" value = "Upload a file" class="btn btn-primary">Submit</button>
             </form>
+            <br>
+            OR
             <br>
             Enter the text below
             <br>
             <br>
-            <form action="http://127.0.0.1:5000/index" method="post">
+            <form action="https://tapsearch-indexer.herokuapp.com/index" method="post">
                 <textarea name="content" id="" cols="40" rows="40"></textarea>
                 <br>
                 <button class="btn btn-primary">Submit</button>
