@@ -54,23 +54,23 @@ app.get('/', (req, res) => {
 });
 
 app.get('/css/main.css', (_, res) => {
-	res.sendFile(__dirname + '/view/css/main.css')
+	res.sendFile(__dirname + '/view/css/main.css');
 });
 
 app.get('/css/bootstrap.css', (_, res) => {
-	res.sendFile(__dirname + '/view/css/bootstrap.css')
+	res.sendFile(__dirname + '/view/css/bootstrap.css');
 });
 
 app.get('/contact', (_, res) => {
-	res.sendFile(__dirname + '/view/contact.html')
+	res.sendFile(__dirname + '/view/contact.html');
 });
 
 app.get('/indexer', (_, res) => {
-	res.sendFile(__dirname + '/view/indexer.html')
+	res.sendFile(__dirname + '/view/indexer.html');
 });
 
 app.get('/searcher', (_, res) => {
-	res.sendFile(__dirname + '/view/searcher.html')
+	res.sendFile(__dirname + '/view/searcher.html');
 });
 
 app.post('/index', (req, res) => {
@@ -83,15 +83,15 @@ app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {
 	const file = req.file.path
 	console.log('received file name: ', file);
 	if (!file) {
-		const error = new Error('Please upload a file')
-		error.httpStatusCode = 400
-		return next(error)
+		const error = new Error('Please upload a file');
+		error.httpStatusCode = 400;
+		return next(error);
 	}
 	let buffer = fs.readFileSync(file);
 	pdf(buffer).then(data => {
 		indexerInstance.insertContents(data.text);
 	});
-	res.send(file)
+	res.sendFile(__dirname + '/view/index-success.html');
 });
 
 app.post('/search', (req, res) => {

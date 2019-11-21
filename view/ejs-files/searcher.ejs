@@ -27,16 +27,18 @@
             </form>
         </div>
         <div class="ejs-render">
-            Searched documents below .. (About <%= time %> milliseconds)
-            <% for (let i=0; i < result.length; i++) { %>
-                <div>
-                    <%= i + 1 %>.
-                    <%= result[i] %>
-                </div>
-                <br>
-                <br>
-            <% } %>
-            <% if (result.length === 0)  {%>
+
+            <% if (result.length !== 0)  {%>
+                <b> Searched documents below .. (About <%= time %> milliseconds) </b>
+                <% for (let i=0; i < result.length; i++) { %>
+                    <div>
+                        <%= i + 1 %>.
+                        <%= result[i] %>
+                    </div>
+                    <br>
+                    <br>
+                <% } %>
+            <% } else {%>
             <div>
                 Documents not found.
             </div>

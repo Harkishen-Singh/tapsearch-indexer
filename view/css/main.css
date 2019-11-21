@@ -231,3 +231,7 @@ form {
 .ejs-render {
   margin-bottom: 20%;
 }
+
+.success {
+  background-color: lightgreen;
+}
