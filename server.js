@@ -80,7 +80,8 @@ app.post('/index', (req, res) => {
 
 app.get('/clear', (_, res) => {
 	const { lI, lD } = indexerInstance.clear();
-	res.send('Indexes cleared. Available inverted indexes were ', lI, ' with ', lD, ' documents');
+	console.warn(lI, ' ', lD)
+	res.render(__dirname + '/view/ejs-files/clear.ejs', { lI, lD });
 });
 
 app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {
