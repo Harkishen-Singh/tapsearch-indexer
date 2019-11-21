@@ -15,9 +15,13 @@ class Indexer {
     }
 
     initMapsFromDB() {
-        this.indexInvMap = this.db.getData('indexInvMap');
-        this.documentHashMap = this.db.getData('documentHashMap');
-        console.log('indexer is up ..');
+        if (Object.keys(this.db.getData('/')).length) {
+            this.indexInvMap = this.db.getData('/indexInvMap');
+            this.documentHashMap = this.db.getData('/documentHashMap');
+            console.log(this.indexInvMap)
+            console.log(this.documentHashMap)
+            console.log('indexer is up ..');
+        }
     }
 
     /**
