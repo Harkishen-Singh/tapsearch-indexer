@@ -107,11 +107,5 @@ const server = app.listen(port, url, err => {
 		throw err;
 	}
 
-	// print self IP address
-	const addr = networkInterface()['wlp3s0'];
-	for (let inst of addr) {
-		console.log('from: ', inst['address'], ' family: ', inst['family']);
-	}
-
 	console.log('up at ', server.address().address, ' at port ', server.address().port);
 });
