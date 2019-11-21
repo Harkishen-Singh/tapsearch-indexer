@@ -1,6 +1,6 @@
 ## TapSearch-Indexer
 
-TapSearch-Indexer forms an inverted indexing of the words against the corresponding documents, similar to what elasticsearch does.
+TapSearch-Indexer forms an inverted indexing of the words against the corresponding documents, similar to what elasticsearch does. It uses local node-json-db which is used to load and store the inverted indexes along with the document hashes.
 
 It supports:
 
@@ -8,6 +8,8 @@ It supports:
 2. PDFs files (Bonus 1)
 
 Hosted at: [https://tapsearch-indexer.herokuapp.com/](https://tapsearch-indexer.herokuapp.com/)
+
+Explanatory video link: [link (google-drive)](https://drive.google.com/file/d/1GDlk_ilnQhMliPu_wI9hHEmUiIy-Nc9a/view)
 
 ### How to run
 
