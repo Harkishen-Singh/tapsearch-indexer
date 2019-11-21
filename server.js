@@ -3,6 +3,7 @@ const exp = require('express'),
 	bodyParser = require('body-parser'),
 	fs = require('fs'),
 	pdf = require('pdf-parse'),
+	{  performance } = require('perf_hooks'),
 	multer = require('multer'),
 	networkInterface = require('os')['networkInterfaces'],
 	port = process.env.PORT || 5000,
@@ -95,8 +96,10 @@ app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {
 
 app.post('/search', (req, res) => {
 	let key = req.body.key;
+	let bef = performance.now();
 	let result = indexerInstance.getTOP10MatchingDocuments(key);
-	res.render(__dirname + '/view/ejs-files/searcher.ejs', { result: result });
+	let aft = performance.now();
+	res.render(__dirname + '/view/ejs-files/searcher.ejs', { result: result, time: Math.round((aft - bef) * 100) / 100 });
 });
 
 const server = app.listen(port, url, err => {
