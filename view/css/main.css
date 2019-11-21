@@ -234,4 +234,8 @@ form {
 
 .success {
   background-color: lightgreen;
+  position: absolute;
+  width: -webkit-fill-available;
+  margin-right: 25%;
+  margin-left: 4%;
 }
