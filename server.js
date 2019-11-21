@@ -5,7 +5,6 @@ const exp = require('express'),
 	pdf = require('pdf-parse'),
 	{  performance } = require('perf_hooks'),
 	multer = require('multer'),
-	networkInterface = require('os')['networkInterfaces'],
 	port = process.env.PORT || 5000,
 	stopwords = require('./utils/stop-words').stopwords,
 	Indexer = require('./utils/indexer').Indexer,
@@ -77,6 +76,11 @@ app.post('/index', (req, res) => {
 	let text = req.body.content;
 	indexerInstance.insertContents(text);
 	res.redirect('/');
+});
+
+app.get('/clear', (_, res) => {
+	const { lI, lD } = indexerInstance.clear();
+	res.send('Indexes cleared. Available inverted indexes were ', lI, ' with ', lD, ' documents');
 });
 
 app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {

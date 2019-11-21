@@ -14,12 +14,13 @@ class Indexer {
         this.initMapsFromDB();
     }
 
+    /**
+     * Loads maps from the local database.
+     */
     initMapsFromDB() {
         if (Object.keys(this.db.getData('/')).length) {
             this.indexInvMap = this.db.getData('/indexInvMap');
             this.documentHashMap = this.db.getData('/documentHashMap');
-            console.log(this.indexInvMap)
-            console.log(this.documentHashMap)
             console.log('indexer is up ..');
         }
     }
@@ -40,18 +41,35 @@ class Indexer {
         return filtered;
     }
 
+    /**
+     * Saves the map to the corresponding name.
+     * @param {string} name - name of the collection
+     * @param {string map} map - specified data as map
+     */
     save(name, map) {
         this.db.push('/' + name, map);
     }
 
+    /**
+     * Checks if the given word is stopword.
+     * @param {string} word
+     */
     isStopword(word) {
         return this.stopwords.includes(word);
     }
 
+    /**
+     * Checks if the given word is already mapped or not.
+     * @param {string} word
+     */
     isMapped(word) {
         return this.indexInvMap.hasOwnProperty(word);
     }
 
+    /**
+     * Generate hash code for the specified string or document.
+     * @param {string} s - given document or string
+     */
     gethashCode(s) {
         let hash = 0;
         if (s.length == 0) {
@@ -66,6 +84,10 @@ class Indexer {
         return Math.abs(hash);
     }
 
+    /**
+     * Filter the words from invalid characters.
+     * @param {string} w
+     */
     filterWords(w) {
         return w.replace('.', '')
             .replace(',', '')
@@ -73,6 +95,10 @@ class Indexer {
             .replace('"', '');
     }
 
+    /**
+     * Create a hash map of set of documents.
+     * @param {[string]} documents - array of documents or paragraphs
+     */
     createDocumentHashMap(documents) {
         for (const doc of documents) {
             this.documentHashMap[this.gethashCode(doc)] = doc;
@@ -81,17 +107,36 @@ class Indexer {
         return this.documentHashMap;
     }
 
+    /**
+     * Get hash code of the specified document.
+     * @param {string : string} map
+     * @param {string} doc
+     */
     getHashFromDocument(map, doc) {
         return Object.keys(map).find(key => map[key] === doc);
     }
 
+    /**
+     * Get document from the corresponding hash.
+     * @param {string} hash
+     */
     getDocumentFromHash(hash) {
         return this.documentHashMap[hash];
     }
 
+    /**
+     * Deletes the indexes.
+     * @returns the length of the deleted indexes.
+     */
     clear() {
+        let lI = Object.keys(this.indexInvMap).length,
+            lD = Object.keys(this.documentHashMap).length;
         this.indexInvMap = {};
         this.documentHashMap = {};
+        return {
+            lI,
+            lD
+        };
     }
 
     /**
@@ -100,10 +145,7 @@ class Indexer {
      */
     createInvIndexMap(documents) {
         for (const doc of documents) {
-            // let hash = this.getHashFromDocument(this.documentHashMap, doc); // since hash has already been computed
-            console.warn('replace the below line')
             let hash = this.gethashCode(doc);
-            console.warn('hash is ', hash)
             for (let word of doc.split(' ')) {
                 word = this.filterWords(word.toLowerCase());
                 if(!this.isStopword(word)) {
@@ -120,6 +162,10 @@ class Indexer {
         return this.indexInvMap;
     }
 
+    /**
+     * Fetch documents from the related word
+     * @param {string} word
+     */
     getRelatedDocuments(word) {
         word = this.filterWords(word.toLowerCase());
         if (this.isStopword(word)) {
@@ -136,6 +182,10 @@ class Indexer {
         return []; // if word not found in the existing indexes
     }
 
+    /**
+     * Fetch Top 10 documents of the related word.
+     * @param {string} word
+     */
     getTOP10MatchingDocuments(word) {
         let docs = this.getRelatedDocuments(word);
         console.log('length : ', docs.length)
@@ -148,6 +198,11 @@ class Indexer {
         return docs;
     }
 
+    /**
+     * Injects the documents into the inverted index engine in order
+     * to create inverted indexes against the corresponding document.
+     * @param {*} content
+     */
     insertContents(content) {
         let docs = this.getParagraphs(content);
         this.createDocumentHashMap(docs);
