@@ -1,6 +1,9 @@
 const exp = require('express'),
 	app = exp(),
 	bodyParser = require('body-parser'),
+	fs = require('fs'),
+	pdf = require('pdf-parse'),
+	multer = require('multer'),
 	networkInterface = require('os')['networkInterfaces'],
 	port = process.env.PORT || 5000,
 	stopwords = require('./utils/stop-words').stopwords,
@@ -8,11 +11,24 @@ const exp = require('express'),
 	indexerInstance = new Indexer('', stopwords),
 	url = '0.0.0.0';
 
-var requestedUsersSinceUP = 0;
+var requestedUsersSinceUP = 0,
+	storage = multer.diskStorage({
+		destination: function (_, _, cb) {
+			cb(null, 'uploads')
+		},
+		filename: function (_, file, cb) {
+			cb(null, file.fieldname + '-' + Date.now() + '.pdf')
+		}
+	}),
+	upload = multer({ storage });
 
 // allow long document contents
 app.use(bodyParser({
 	limit: '50mb'
+}));
+
+app.use(bodyParser.urlencoded({
+	extended: true
 }));
 
 app.use(bodyParser.json());
@@ -62,21 +78,30 @@ app.post('/index', (req, res) => {
 	res.redirect('/');
 });
 
+app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {
+	const file = req.file.path
+	console.log('received file name: ', file);
+	if (!file) {
+		const error = new Error('Please upload a file')
+		error.httpStatusCode = 400
+		return next(error)
+	}
+	let buffer = fs.readFileSync(file);
+	pdf(buffer).then(data => {
+		indexerInstance.insertContents(data.text);
+	});
+	res.send(file)
+});
+
 app.post('/search', (req, res) => {
-	// console.warn('req is ', req)
 	let key = req.body.key;
-	console.warn('key is ss ', req.params.key)
-	// console.warn('key is ss ', req.body.key)
-	// console.warn('key is ss ', req.query)
 	let result = indexerInstance.getTOP10MatchingDocuments(key);
-	console.warn('result is ')
-	console.warn(result)
 	res.render(__dirname + '/view/ejs-files/searcher.ejs', { result: result });
 });
 
-const server = app.listen(port, url, e => {
-	if (e) {
-		throw e;
+const server = app.listen(port, url, err => {
+	if (err) {
+		throw err;
 	}
 
 	// print self IP address

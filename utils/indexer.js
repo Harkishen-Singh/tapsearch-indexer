@@ -1,11 +1,23 @@
 // const stopwords = require('./stop-words').stopwords;
+const JsonDB = require('node-json-db').JsonDB,
+    Config = require('node-json-db/dist/lib/JsonDBConfig').Config;
 
 class Indexer {
     constructor(content, stopwords) {
         this.indexInvMap = {};
         this.content = content;
+        this.db = new JsonDB(new Config('store/tapsearch', true, true, '/'));
         this.stopwords = stopwords;
         this.documentHashMap = {};
+
+        // load previous maps
+        this.initMapsFromDB();
+    }
+
+    initMapsFromDB() {
+        this.indexInvMap = this.db.getData('indexInvMap');
+        this.documentHashMap = this.db.getData('documentHashMap');
+        console.log('indexer is up ..');
     }
 
     /**
@@ -22,6 +34,10 @@ class Indexer {
             }
         }
         return filtered;
+    }
+
+    save(name, map) {
+        this.db.push('/' + name, map);
     }
 
     isStopword(word) {
@@ -57,6 +73,7 @@ class Indexer {
         for (const doc of documents) {
             this.documentHashMap[this.gethashCode(doc)] = doc;
         }
+        this.save('documentHashMap', this.documentHashMap);
         return this.documentHashMap;
     }
 
@@ -95,6 +112,7 @@ class Indexer {
                 }
             }
         }
+        this.save('indexInvMap', this.indexInvMap);
         return this.indexInvMap;
     }
 

@@ -227,3 +227,7 @@ form {
   height: 100%;
   width: 100%;
 }
+
+.ejs-render {
+  margin-bottom: 20%;
+}
