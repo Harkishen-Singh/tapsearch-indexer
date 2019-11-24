@@ -101,6 +101,10 @@ app.post('/indexPDF', upload.single('myFile'), function (req, res, next) {
 
 app.post('/search', (req, res) => {
 	let key = req.body.key;
+	if (stopwords.includes(key)) {
+		res.render(__dirname + '/view/ejs-files/searcher.ejs', { result: [], time: '' });
+		res.end();
+	}
 	let bef = performance.now();
 	let result = indexerInstance.getTOP10MatchingDocuments(key);
 	let aft = performance.now();

@@ -92,6 +92,7 @@ class Indexer {
         return w.replace('.', '')
             .replace(',', '')
             .replace("'", '')
+            .replace('\r\n', '')
             .replace('"', '');
     }
 
@@ -169,12 +170,11 @@ class Indexer {
     getRelatedDocuments(word) {
         word = this.filterWords(word.toLowerCase());
         if (this.isStopword(word)) {
-            return 'stop words not allowed';
+            return new Error('stop words');
         } else if (this.isMapped(word)) {
             let hashes = this.indexInvMap[word],
                 docs  = [];
             for (const hash of hashes) {
-                console.warn('hash is ', hash)
                 docs.push(this.getDocumentFromHash(hash));
             }
             return docs;
@@ -187,15 +187,21 @@ class Indexer {
      * @param {string} word
      */
     getTOP10MatchingDocuments(word) {
-        let docs = this.getRelatedDocuments(word);
-        console.log('length : ', docs.length)
-        if (docs.length > 10) {
-            let diff = docs.length - 10;
-            for (let i = 0; i < diff; i++) {
-                docs.pop();
+        try {
+            let docs = this.getRelatedDocuments(word);
+            if (docs.length === 0)
+                return docs;
+            if (docs.length > 2) {
+                let diff = docs.length - 2;
+                for (let i = 0; i < diff; i++) {
+                    docs.pop();
+                }
             }
+            return docs;
+        } catch(e) {
+            // since stop words are not indexed
+            return [];
         }
-        return docs;
     }
 
     /**
